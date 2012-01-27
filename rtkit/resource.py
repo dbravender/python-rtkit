@@ -92,7 +92,7 @@ class RTResponse(object):
         ...     3
         ... eggs:'''
         >>> RTResponse._parse(body, decode)
-        [[('spam', '1'), ('ham', '2, 3'), ('eggs', '')]]
+        [[('spam', '1'), ('ham', '2,\n3'), ('eggs', '')]]
         >>> RTResponse._parse('# spam 1 does not exist.', decode)
         Traceback (most recent call last):
             ...
@@ -162,7 +162,7 @@ class RTResponse(object):
         ... a -- b
         ... '''
         >>> RTResponse._build(body)
-        [['# a b', 'spam: 1', 'ham: 2, 3'], ['# c', 'spam: 4', 'ham:'], ['a -- b']]
+        [['# a\\nb', 'spam: 1', 'ham: 2,\\n3'], ['# c', 'spam: 4', 'ham:'], ['a -- b']]
         """
         def build_section(section):
             logic_lines = []
@@ -170,7 +170,7 @@ class RTResponse(object):
                 if cls.HEADER.match(line):
                     continue
                 if line[0].isspace():
-                   logic_lines[-1] += ' '+line.strip(' ')
+                   logic_lines[-1] += '\n'+line.strip(' ')
                 else:
                    logic_lines.append(line)
             return logic_lines
